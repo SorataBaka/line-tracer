@@ -17,24 +17,26 @@ extern "C" {
 #endif
 #endif	/* INTERFACE_H */
 
+#define _XTAL_FREQ 4000000
+
 //Define possible notes to be used with the buzzer
 
-#define DO5 956
-#define RE5 851
-#define MI5 758
-#define FA5 716
-#define SOL5 638
-#define LA5 568
-#define SI5 506
+#define noteD 294
+#define noteFSharp 369
+#define noteG 392
+#define noteA 440
+#define noteB 494
+#define noteE 330
+#define noteCSharp 554
 
-#define GON {PORTBbits.RB4=0;}
-#define GOFF {PORTBbits.RB4=1;}
-#define YON {PORTBbits.RB5=0;}
-#define YOFF {PORTBbits.RB5=1;}
-#define RON {PORTBbits.RB6=0;}
-#define ROFF {PORTBbits.RB6=1;}
-#define BON {PORTBbits.RB7=0;}
-#define BOFF {PORTBbits.RB7=1;}
+#define GreenON {PORTBbits.RB4=0;}
+#define GreenOFF {PORTBbits.RB4=1;}
+#define YellowON {PORTBbits.RB5=0;}
+#define YellowOFF {PORTBbits.RB5=1;}
+#define RedON {PORTBbits.RB6=0;}
+#define RedOFF {PORTBbits.RB6=1;}
+#define BlueON {PORTBbits.RB7=0;}
+#define BlueOFF {PORTBbits.RB7=1;}
 
 #define RightMotorA PORTBbits.RB0
 #define RightMotorB PORTBbits.RB1
@@ -51,3 +53,28 @@ extern "C" {
 #define Button1 PORTAbits.RA2
 #define Button2 PORTAbits.RA3
 #define Buzzer PORTAbits.RA6
+
+#define wait(time) {__delay_ms(time);}
+
+#define soundBuzzer(tone,time,mute) {\
+    for(int t = 0; t < (time - mute) * 10; t += tone/100*2){\
+        PORTAbits.RA6=0;\
+        __delay_us(tone);\
+        PORTAbits.RA6=1;\
+        __delay_us(tone);\
+    }\
+    __delay_ms(mute);\
+}
+#define Forward(ratio,wait) {\
+    for(int t = 0; t < 10; t++){\
+        LeftMotorA = 0;\
+        LeftMotorB = 1;\
+        RightMotorA = 0;\
+        RightMotorB = 1:\
+        __delay_ms(ratio);\
+        \
+        PORTBbits.RB1=0;\
+        PORTBbits.RB2=0;\
+        __delay_ms(wait);\
+    }\
+}
