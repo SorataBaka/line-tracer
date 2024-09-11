@@ -1197,8 +1197,8 @@ void Initialize(){
     {PORTBbits.RB6=1;}
     {PORTBbits.RB7=1;}
 
+    PORTBbits.RB2 = PORTBbits.RB3 = 0;
     PORTBbits.RB0 = PORTBbits.RB1 = 0;
-    PORTBbits.RB3 = PORTBbits.RB2 = 0;
 }
 void StartupSequence(){
 
@@ -1215,47 +1215,43 @@ void StartupSequence(){
     {_delay((unsigned long)((500)*(4000000/4000.0)));}
     {PORTBbits.RB7=1;}
 
-    { for(int t = 0; t < (800 - 50) * 10; t += 294/100*2){ PORTAbits.RA6=0; _delay((unsigned long)((294)*(4000000/4000000.0))); PORTAbits.RA6=1; _delay((unsigned long)((294)*(4000000/4000000.0))); } _delay((unsigned long)((50)*(4000000/4000.0)));};
-    { for(int t = 0; t < (800 - 100) * 10; t += 369/100*2){ PORTAbits.RA6=0; _delay((unsigned long)((369)*(4000000/4000000.0))); PORTAbits.RA6=1; _delay((unsigned long)((369)*(4000000/4000000.0))); } _delay((unsigned long)((100)*(4000000/4000.0)));};
-    { for(int t = 0; t < (800 - 100) * 10; t += 392/100*2){ PORTAbits.RA6=0; _delay((unsigned long)((392)*(4000000/4000000.0))); PORTAbits.RA6=1; _delay((unsigned long)((392)*(4000000/4000000.0))); } _delay((unsigned long)((100)*(4000000/4000.0)));};
-    { for(int t = 0; t < (800 - 100) * 10; t += 440/100*2){ PORTAbits.RA6=0; _delay((unsigned long)((440)*(4000000/4000000.0))); PORTAbits.RA6=1; _delay((unsigned long)((440)*(4000000/4000000.0))); } _delay((unsigned long)((100)*(4000000/4000.0)));};
-    { for(int t = 0; t < (800 - 100) * 10; t += 392/100*2){ PORTAbits.RA6=0; _delay((unsigned long)((392)*(4000000/4000000.0))); PORTAbits.RA6=1; _delay((unsigned long)((392)*(4000000/4000000.0))); } _delay((unsigned long)((100)*(4000000/4000.0)));};
-    { for(int t = 0; t < (800 - 100) * 10; t += 369/100*2){ PORTAbits.RA6=0; _delay((unsigned long)((369)*(4000000/4000000.0))); PORTAbits.RA6=1; _delay((unsigned long)((369)*(4000000/4000000.0))); } _delay((unsigned long)((100)*(4000000/4000.0)));};
-    { for(int t = 0; t < (800 - 100) * 10; t += 294/100*2){ PORTAbits.RA6=0; _delay((unsigned long)((294)*(4000000/4000000.0))); PORTAbits.RA6=1; _delay((unsigned long)((294)*(4000000/4000000.0))); } _delay((unsigned long)((100)*(4000000/4000.0)));};
+    { for(int t = 0; t < (200 - 50) * 10; t += 523/100*2){ PORTAbits.RA6=0; _delay((unsigned long)((523)*(4000000/4000000.0))); PORTAbits.RA6=1; _delay((unsigned long)((523)*(4000000/4000000.0))); } _delay((unsigned long)((50)*(4000000/4000.0)));};
+    { for(int t = 0; t < (200 - 100) * 10; t += 659/100*2){ PORTAbits.RA6=0; _delay((unsigned long)((659)*(4000000/4000000.0))); PORTAbits.RA6=1; _delay((unsigned long)((659)*(4000000/4000000.0))); } _delay((unsigned long)((100)*(4000000/4000.0)));};
 }
 
-void SetleftMotor(int direction, int state){
-    if(state == 0){
-
-        PORTBbits.RB3 = 0;
-        PORTBbits.RB2 = 0;
-        return;
-    }
-    if(direction == 1){
-        PORTBbits.RB3 = 0;
-        PORTBbits.RB2 = 1;
-        return;
-    }
-    PORTBbits.RB3 = 1;
-    PORTBbits.RB2 = 0;
-    return;
-}
 void SetRightMotor(int direction, int state){
+    if(state == 0){
+        PORTBbits.RB2 = 0;
+        PORTBbits.RB3 = 0;
+        return;
+    }
+    if(direction == 1 && state == 1){
+        PORTBbits.RB2 = 1;
+        PORTBbits.RB3 = 0;
+        return;
+    } else if(direction == 0 && state == 1){
+        PORTBbits.RB2 = 0;
+        PORTBbits.RB3 = 1;
+        return;
+    }
+}
+
+void SetLeftMotor(int direction, int state){
     if(state == 0){
         PORTBbits.RB0 = 0;
         PORTBbits.RB1 = 0;
         return;
     }
-    if(direction == 1){
+    if(direction == 1 && state == 1){
+        PORTBbits.RB0 = 0;
+        PORTBbits.RB1 = 1;
+        return;
+    } else if(direction == 0 && state == 1){
         PORTBbits.RB0 = 0;
         PORTBbits.RB1 = 1;
         return;
     }
-    PORTBbits.RB0 = 1;
-    PORTBbits.RB1 = 0;
-    return;
 }
-
 
 int main(int argc, char** argv) {
 
@@ -1265,18 +1261,70 @@ int main(int argc, char** argv) {
     TRISA=0b00111111;
     PORTB=0b00000000;
     TRISB=0b00000000;
+    STARTUP:
     Initialize();
     StartupSequence();
     while(1){
-        SetRightMotor(1, 1);
-        {_delay((unsigned long)((2000)*(4000000/4000.0)));};
-        SetRightMotor(0, 1);
-        {_delay((unsigned long)((2000)*(4000000/4000.0)));};
-        SetRightMotor(0, 0);
-
         {PORTBbits.RB7=0;}
-        {_delay((unsigned long)((200)*(4000000/4000.0)));};
+        if(!PORTAbits.RA2){
+            {PORTBbits.RB7=1;}
+            { for(int t = 0; t < (200 - 50) * 10; t += 523/100*2){ PORTAbits.RA6=0; _delay((unsigned long)((523)*(4000000/4000000.0))); PORTAbits.RA6=1; _delay((unsigned long)((523)*(4000000/4000000.0))); } _delay((unsigned long)((50)*(4000000/4000.0)));};
+            break;
+        }
+    }
+    while(1){
+        {PORTBbits.RB4=0;}
+        if(!PORTAbits.RA2 && !PORTAbits.RA3){
+            {PORTBbits.RB4=1;}
+            {PORTBbits.RB6=0;}
+            { for(int t = 0; t < (2000 - 100) * 10; t += 392/100*2){ PORTAbits.RA6=0; _delay((unsigned long)((392)*(4000000/4000000.0))); PORTAbits.RA6=1; _delay((unsigned long)((392)*(4000000/4000000.0))); } _delay((unsigned long)((100)*(4000000/4000.0)));};
+            break;
+        }
+        if(!PORTAbits.RA3) goto STARTUP;
+
+        if(!PORTAbits.RA1 && !PORTAbits.RA0){
+            {PORTBbits.RB5=0;}
+            {PORTBbits.RB7=0;}
+            for(int i = 0; i < 10; i++){
+                PORTBbits.RB1 = 1;
+                PORTBbits.RB2 = 1;
+                PORTBbits.RB3 = 0;
+                { for(int t = 0; t < (8 - 0) * 10; t += 440/100*2){ PORTAbits.RA6=0; _delay((unsigned long)((440)*(4000000/4000000.0))); PORTAbits.RA6=1; _delay((unsigned long)((440)*(4000000/4000000.0))); } _delay((unsigned long)((0)*(4000000/4000.0)));};
+                PORTBbits.RB1 = PORTBbits.RB2 = 0;
+                _delay((unsigned long)((2)*(4000000/4000.0)));
+
+            }
+
+
+
+        }else if(PORTAbits.RA1 && !PORTAbits.RA0){
+            {PORTBbits.RB7=0;}
+            for(int i = 0; i < 10; i++){
+                PORTBbits.RB2 = 1;
+                PORTBbits.RB3 = 0;
+                { for(int t = 0; t < (8 - 0) * 10; t += 523/100*2){ PORTAbits.RA6=0; _delay((unsigned long)((523)*(4000000/4000000.0))); PORTAbits.RA6=1; _delay((unsigned long)((523)*(4000000/4000000.0))); } _delay((unsigned long)((0)*(4000000/4000.0)));};
+                PORTBbits.RB2 = 0;
+                _delay((unsigned long)((2)*(4000000/4000.0)));
+
+            }
+        }else if(!PORTAbits.RA1 && PORTAbits.RA0){
+            {PORTBbits.RB5=0;}
+            for(int i = 0; i < 10; i++){
+                PORTBbits.RB0 = 0;
+                PORTBbits.RB1 = 1;
+                { for(int t = 0; t < (8 - 0) * 10; t += 659/100*2){ PORTAbits.RA6=0; _delay((unsigned long)((659)*(4000000/4000000.0))); PORTAbits.RA6=1; _delay((unsigned long)((659)*(4000000/4000000.0))); } _delay((unsigned long)((0)*(4000000/4000.0)));};
+                PORTBbits.RB1 = 0;
+                _delay((unsigned long)((2)*(4000000/4000.0)));
+
+            }
+        }
+        {PORTBbits.RB4=1;}
+        {PORTBbits.RB5=1;}
         {PORTBbits.RB7=1;}
+        {PORTBbits.RB6=1;}
+    }
+    while(1){
+        if(!PORTAbits.RA3) goto STARTUP;
     }
     return (0);
 }

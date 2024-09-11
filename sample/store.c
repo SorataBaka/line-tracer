@@ -103,42 +103,25 @@ int main(int argc, char** argv) {
         }
         if(!Button2) goto STARTUP;
         //If both sensors detect white, simply go forward
-        if(!LightSensorLeft && !LightSensorRight){
+        if(LightSensorLeft && LightSensorRight){
+            SetLeftMotor(1, 1);
+            SetRightMotor(1, 1);
             YellowON
             BlueON
-            for(int i = 0; i < 10; i++){
-                LeftMotorB = 1;
-                RightMotorA = 1;
-                RightMotorB = 0;
-                soundBuzzer(440, 8, 0);
-                LeftMotorB = RightMotorA = 0;
-                __delay_ms(2);
-                // (3 + 7) * 10 = 100ms
-            }
         //Change these if the sensor positioning doesnt correlate to motor movement. What if want
         //is that if the left sensor detects black, we move right motor
         //if right sensor detects black, we move left motor
         }else if(LightSensorLeft && !LightSensorRight){
+            SetRightMotor(1, 1);
             BlueON
-            for(int i = 0; i < 10; i++){
-                RightMotorA = 1;
-                RightMotorB = 0;
-                soundBuzzer(523, 8, 0);
-                RightMotorA = 0;
-                __delay_ms(2);
-                // (3 + 7) * 10 = 100ms
-            }
+        //Otherwise, if both detect black for example the ending area, stop both motors
         }else if(!LightSensorLeft && LightSensorRight){
+            SetLeftMotor(1, 1);
             YellowON
-            for(int i = 0; i < 10; i++){
-                LeftMotorA = 0;
-                LeftMotorB = 1;
-                soundBuzzer(659, 8, 0);
-                LeftMotorB = 0; 
-                __delay_ms(2);
-                // (3 + 7) * 10 = 100ms
-            }
         }
+        wait(100);
+        SetLeftMotor(0, 0);
+        SetRightMotor(0, 0);
         GreenOFF
         YellowOFF
         BlueOFF        

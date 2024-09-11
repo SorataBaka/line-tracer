@@ -35,3 +35,5 @@ RB6 is the red LED
 RB7 is the blue LED
 
 Based on the given header file, 
+
+THE MOTORS WILL NEED TO BE PULSED

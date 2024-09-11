@@ -38,10 +38,10 @@ extern "C" {
 #define BlueON {PORTBbits.RB7=0;}
 #define BlueOFF {PORTBbits.RB7=1;}
 
-#define RightMotorA PORTBbits.RB2
-#define RightMotorB PORTBbits.RB3
-#define LeftMotorA PORTBbits.RB0
-#define LeftMotorB PORTBbits.RB1
+#define RightMotorA PORTBbits.RB0
+#define RightMotorB PORTBbits.RB1
+#define LeftMotorA PORTBbits.RB3
+#define LeftMotorB PORTBbits.RB2
 
 #define GreenLED  PORTBbits.RB4
 #define YellowLED PORTBbits.RB5
